@@ -1,5 +1,5 @@
 import requests
-
+from config import DOLPHIN_LOGIN, DOLPHIN_PASSWORD
 
 def get_dolphin_token(login, password):
     json_data = {
