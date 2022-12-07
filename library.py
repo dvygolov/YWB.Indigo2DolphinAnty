@@ -12,6 +12,7 @@ class Indigo:
         self.port = port
         self.plan = self.get_indigo_plan_settings()
         self.groups = self.get_groups()
+        pass
 
     def get_indigo_plan_settings(self):
         headers = {

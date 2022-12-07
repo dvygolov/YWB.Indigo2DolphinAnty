@@ -40,7 +40,7 @@ class Auxiliary:
     def get_group_name(self, groups):
         for item in groups:
             if item['uuid'] == self.result['groupId']:
-                result = item['name']
+                result = item['name'] if 'name' in item else 'basic'
                 return result
 
     def get_platform(self):

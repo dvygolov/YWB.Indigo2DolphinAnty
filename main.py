@@ -8,8 +8,8 @@ indigo = Indigo(INDIGO_TOKEN, INDIGO_PORT)
 indigo_profiles = indigo.get_profiles()
 
 for profile in indigo_profiles:
+    print(f'Processing profile {profile["name"]}...')
     indigo_profile_data_dict = indigo.get_profile_info(profile['uuid'])
-    print(f'Processing profile {indigo_profile_data_dict["name"]}...')
     response = dolphin.create_profile(indigo_profile_data_dict)
     if response['success'] == 1:
         print(f'[{datetime.now().strftime("%H:%M:%S")}] Profile {indigo_profile_data_dict["name"]} - '
