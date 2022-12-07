@@ -1,14 +1,4 @@
 import requests
-from config import DOLPHIN_LOGIN, DOLPHIN_PASSWORD
-
-def get_dolphin_token(login, password):
-    json_data = {
-        'username': DOLPHIN_LOGIN,  # Replace <your_login> to your login for Dolphin Anty Browser
-        'password': DOLPHIN_PASSWORD,  # Replace <your_password> to your login for Dolphin Anty Browser
-    }
-    response = requests.post('http://142.132.182.77:81/auth/login', json=json_data)
-    return response.json()['token']
-
 
 class Auxiliary:
     def __init__(self, result):
@@ -23,20 +13,21 @@ class Auxiliary:
             return notes
 
     def get_proxy_type(self):
-        if self.result['proxyType'] == 1:
+        if self.result['proxyType'] == 0:
+            proxy_type = 'none';
+        elif self.result['proxyType'] == 1:
             proxy_type = 'http'
-            return proxy_type
         elif self.result['proxyType'] == 2:
             proxy_type = 'socks4'
-            return proxy_type
         elif self.result['proxyType'] == 3:
             proxy_type = 'socks5'
-            return proxy_type
         elif self.result['proxyType'] == 5:
             proxy_type = 'ssh'
-            return proxy_type
+        return proxy_type
 
     def get_proxy(self, proxy_type):
+        if proxy_type == 'none':
+            return {}
         return {
             'name': self.result['proxyHost'],
             'host': self.result['proxyHost'],
@@ -46,16 +37,8 @@ class Auxiliary:
             'password': self.result['proxyPass'],
         }
 
-    def get_group_name(self, token):
-        headers = {
-            'accept': 'application/json, text/plain, */*',
-            'token': token,
-        }
-        response = requests.get(
-            'https://indigo.multiloginapp.com/clb/rest/v1/t/50a38c97-c687-349b-872c-4eb2945b47ae/'
-            'm/7b2ff325-d481-373d-8059-9972a81b5d69/g/', headers=headers)
-
-        for item in response.json():
+    def get_group_name(self, groups):
+        for item in groups:
             if item['uuid'] == self.result['groupId']:
                 result = item['name']
                 return result
@@ -64,7 +47,7 @@ class Auxiliary:
         if self.result['osType'] == 'mac':
             platform = 'macos'
             return platform
-        elif self.result['osType'] == 'windows':
+        elif self.result['osType'] == 'win':
             platform = 'windows'
             return platform
 

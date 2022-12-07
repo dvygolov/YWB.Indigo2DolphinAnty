@@ -10,6 +10,27 @@ class Indigo:
     def __init__(self, token, port):
         self.token = token
         self.port = port
+        self.plan = self.get_indigo_plan_settings()
+        self.groups = self.get_groups()
+
+    def get_indigo_plan_settings(self):
+        headers = {
+            'accept': 'application/json, text/plain, */*',
+            'token': self.token,
+        }
+        response = requests.get(
+            'https://indigo.multiloginapp.com/rest/v1/plans/current', headers=headers)
+
+        return response.json()
+
+    def get_groups(self):
+        headers = {
+            'accept': 'application/json, text/plain, */*',
+            'token': self.token,
+        }
+        response = requests.get(
+            f'https://indigo.multiloginapp.com/clb/rest/v1/t/{self.plan["uid"]}/m/{self.plan["uid"]}/g/', headers=headers)
+        return response.json()
 
     def get_profiles(self):
         headers = {
@@ -17,8 +38,8 @@ class Indigo:
             'token': self.token,
         }
         response = requests.get(
-            'https://indigo.multiloginapp.com/clb/rest/v1/t/50a38c97-c687-349b-872c-4eb2945b47ae/'
-            'm/7b2ff325-d481-373d-8059-9972a81b5d69/p', headers=headers)
+            f'https://indigo.multiloginapp.com/clb/rest/v1/t/{self.plan["uid"]}/m/{self.plan["uid"]}/p',
+            headers=headers)
 
         return response.json()
 
@@ -39,7 +60,7 @@ class Indigo:
             'notes': Auxiliary(result).get_notes(),
             'useragent': result['container']['navUserAgent'],
             'proxy': Auxiliary(result).get_proxy(proxy_type=Auxiliary(result).get_proxy_type()),
-            'group_name': Auxiliary(result).get_group_name(INDIGO_TOKEN),
+            'group_name': Auxiliary(result).get_group_name(self.groups),
             'platform': Auxiliary(result).get_platform(),
             'webgl_vendor': result['container']['webGlVendor'],
             'webgl_renderer': result['container']['webGlRenderer'],
